@@ -40,27 +40,69 @@ services:
       retries: 5
 
   # ------------------------------------
-  # SERVIÇOS DE APLICAÇÃO (Futuro)
+  # 3. Backend (API - NestJS)
   # ------------------------------------
-  # Deixaremos comentados até criarmos os códigos na Fase 2, 3 e 4.
-  
-  # backend:
-  #   build: ./backend
-  #   depends_on:
-  #     - mongo
-  #   ...
-  
-  # weather-collector:
-  #   build: ./weather-collector
-  #   ...
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: weather_backend
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/weatherdb?authSource=admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    networks:
+      - weather-network
 
-  # weather-worker:
-  #   build: ./weather-worker
-  #   ...
-  
-  # frontend:
-  #   build: ./frontend
-  #   ...
+  # ------------------------------------
+  # 4. Coletor de Dados (Python)
+  # ------------------------------------
+  weather-collector:
+    build: ./weather-collector
+    container_name: weather_collector
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    networks:
+      - weather-network
+
+  # ------------------------------------
+  # 5. Worker (Go)
+  # ------------------------------------
+  weather-worker:
+    build: ./weather-worker
+    container_name: weather_worker
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - backend
+    networks:
+      - weather-network
+
+  # ------------------------------------
+  # 6. Frontend (React)
+  # ------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: weather_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - weather-network
 
 volumes:
   mongo_data:

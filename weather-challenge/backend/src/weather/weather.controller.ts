@@ -1,22 +1,46 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { WeatherService } from './weather.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import type { Response } from 'express';
 
-@Controller('api/weather') // Prefixo da rota
+@Controller('api/weather')
 export class WeatherController {
   constructor(private readonly weatherService: WeatherService) {}
 
-  // Endpoint que o Worker Go vai chamar para salvar dados
-  // POST http://localhost:3000/api/weather/logs
   @Post('logs')
+  @UseGuards(JwtAuthGuard)
   async createLog(@Body() body: any) {
-    console.log('Recebido log do Worker Go:', body);
     return this.weatherService.create(body);
   }
 
-  // Endpoint que o Frontend vai chamar para mostrar o dashboard
-  // GET http://localhost:3000/api/weather/logs
   @Get('logs')
   async getLogs() {
     return this.weatherService.findAll();
+  }
+
+  // Insights de IA (sem proteção para permitir dashboard pública)
+  @Get('insights')
+  async getInsights() {
+    return this.weatherService.generateInsights();
+  }
+
+  // Exportar CSV (protegido)
+  @Get('export/csv')
+  @UseGuards(JwtAuthGuard)
+  async exportCsv(@Res() res: Response) {
+    const csv = await this.weatherService.getCsvData();
+    res.header('Content-Type', 'text/csv');
+    res.attachment('weather_history.csv');
+    return res.send(csv);
+  }
+  
+  // Exportar XLSX (protegido)
+  @Get('export/xlsx')
+  @UseGuards(JwtAuthGuard)
+  async exportXlsx(@Res() res: Response) {
+    const csv = await this.weatherService.getCsvData();
+    res.header('Content-Type', 'text/csv'); 
+    res.attachment('weather_history.xls');
+    return res.send(csv);
   }
 }
