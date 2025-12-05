@@ -22,7 +22,12 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.pre<UserDocument>('save', async function (next) {
   // 'this' se refere ao documento que está sendo salvo
   if (this.isModified('password')) {
-    const salt = await bcrypt.genSalt();
+    // Se a senha já estiver em formato bcrypt (ex: começa com $2b$), não re-hash
+    if (typeof this.password === 'string' && /^\$2[abxy]\$/.test(this.password)) {
+      return next();
+    }
+
+    const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
   next();

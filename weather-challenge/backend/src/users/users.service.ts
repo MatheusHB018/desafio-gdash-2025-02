@@ -14,12 +14,13 @@ export class UsersService implements OnModuleInit {
     const adminEmail = 'admin@example.com';
     const existing = await this.userModel.findOne({ email: adminEmail });
     if (!existing) {
-      const hashedPassword = await bcrypt.hash('123456', 10);
-      await this.userModel.create({
+      // Create with plain password so the schema pre-save hook hashes it once
+      const created = new this.userModel({
         name: 'Admin Padrão',
         email: adminEmail,
-        password: hashedPassword,
+        password: '123456',
       });
+      await created.save();
     }
   }
 
