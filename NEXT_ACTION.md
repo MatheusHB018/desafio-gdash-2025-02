@@ -1,53 +1,59 @@
-# 📌 PRÓXIMOS PASSOS - VISUAL
+# 🎯 PRÓXIMOS PASSOS - ROTEIRO COMPLETO
 
-## 🎯 AGORA
+## ⚡ TL;DR (Super Rápido)
 
-**O que você tem:**
-```
-✅ Frontend rodando em http://localhost:5173
-✅ Backend compilado e pronto
-✅ Todos os componentes integrados
-✅ Autenticação JWT implementada
-✅ Documentação completa
-```
+```powershell
+# Terminal 1: MongoDB
+choco install mongodb-community mongodb-compass -y
+Get-Service MongoDB | Start-Service
 
-**O que falta:**
-```
-❌ MongoDB não instalado
-❌ Backend ainda não conectou ao DB
-❌ Dados ainda não aparecem na Dashboard
+# Terminal 2: Backend
+cd weather-challenge/backend
+npm run start:dev
+
+# Terminal 3: Python Collector
+cd weather-challenge/weather-collector
+python main.py
+
+# Terminal 4: Go Worker
+cd weather-challenge/weather-worker
+go run main.go
+
+# Browser:
+http://localhost:5173
+Email: admin@example.com
+Senha: 123456
 ```
 
 ---
 
-## 📋 PRÓXIMAS 3 AÇÕES (20-30 minutos)
+## 🚀 PASSO A PASSO COMPLETO
 
-### 1️⃣ INSTALAR MONGODB (15 min)
+### 1️⃣ INSTALAR MONGODB (5 min)
 
-**Opção A - Windows MSI (Recomendado):**
-```
-1. Acesse: https://www.mongodb.com/try/download/community
-2. Baixe Windows MSI
-3. Instale (próximo > próximo > concluir)
-4. Pronto!
-```
-
-**Opção B - Docker (2 min):**
+**Windows - Com Chocolatey:**
 ```powershell
-docker run -d -p 27017:27017 --name mongodb mongo:latest
+# Abra PowerShell como ADMIN
+choco install mongodb-community mongodb-compass -y
 ```
+
+**Windows - Sem Chocolatey:**
+1. Acesse: https://www.mongodb.com/try/download/community
+2. Clique "Download" (Windows MSI)
+3. Execute o instalador
+4. Siga os passos normalmente
 
 **Verificar:**
 ```powershell
-mongosh
-# Conectou? Ótimo! Saia com: exit
+Get-Service MongoDB | Select-Object Status
+# Esperado: Running
 ```
 
 ---
 
-### 2️⃣ INICIAR BACKEND (2 min)
+### 2️⃣ INICIAR MONGODB (1 min)
 
-**Abra PowerShell:**
+**PowerShell NOVO:**
 ```powershell
 cd "c:\Users\mathe\OneDrive\Área de Trabalho\desafio-gdash-2025-02\weather-challenge\backend"
 

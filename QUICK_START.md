@@ -1,45 +1,87 @@
-# ⚡ QUICK START - PRÓXIMOS 20 MINUTOS
+# ⚡ QUICK START - MongoDB Compass + Sistema Completo
 
-## 1️⃣ INSTALAR MONGODB (15 min)
+## 🚀 Passo 1: Instalar MongoDB (1 minuto)
 
-### Windows - Opção A: MSI (Recomendado)
-```
-1. https://www.mongodb.com/try/download/community
-2. Baixe Windows MSI
-3. Execute e instale (aceite defaults)
-4. MongoDB estará em C:\Program Files\MongoDB\Server\X.X\bin
-```
+Abra PowerShell como Administrador:
 
-### Windows - Opção B: Docker (2 min)
 ```powershell
-docker run -d -p 27017:27017 --name mongodb mongo:latest
+choco install mongodb-community mongodb-compass -y
 ```
 
-### Verificar instalação
-```powershell
-mongosh
-# Deve conectar com sucesso, depois saia com: exit
-```
+**Se não tem Chocolatey:** Instale em https://www.mongodb.com/try/download/community
 
 ---
 
-## 2️⃣ INICIAR BACKEND (2 min)
+## ✅ Passo 2: Iniciar MongoDB (30 segundos)
+
+```powershell
+Get-Service MongoDB | Start-Service
+```
+
+Verificar status:
+```powershell
+Get-Service MongoDB | Select-Object Status
+```
+
+Esperado: `Running` ✅
+
+---
+
+## 🖥️ Passo 3: Abrir MongoDB Compass (1 minuto)
+
+1. Procure **"MongoDB Compass"** no menu Iniciar
+2. Abra o app
+3. Clique **"Connect"** (já vem com localhost:27017)
+4. Pronto! Verá seus bancos de dados
+
+---
+
+## 🔧 Passo 4: Iniciar Backend (1 minuto)
+
+Abra **PowerShell NOVO** e execute:
 
 ```powershell
 cd "c:\Users\mathe\OneDrive\Área de Trabalho\desafio-gdash-2025-02\weather-challenge\backend"
 npm run start:dev
 ```
 
-**Esperado:**
+Esperado:
 ```
-[NestFactory] Starting Nest application...
-[NestApplication] Nest application successfully started
+[Nest] XXXX - 03/12/2025, XX:XX:XX LOG [NestFactory] Nest application successfully started
+Listening on port 3000
 ```
 
 ---
 
-## 3️⃣ FRONTEND JÁ ESTÁ RODANDO
+## 🐍 Passo 5: Iniciar Python Collector (1 minuto)
 
+Abra **PowerShell NOVO** e execute:
+
+```powershell
+cd "c:\Users\mathe\OneDrive\Área de Trabalho\desafio-gdash-2025-02\weather-challenge\weather-collector"
+python main.py
+```
+
+Esperado: `Collecting weather data...` ✅
+
+---
+
+## 🔄 Passo 6: Iniciar Go Worker (1 minuto)
+
+Abra **PowerShell NOVO** e execute:
+
+```powershell
+cd "c:\Users\mathe\OneDrive\Área de Trabalho\desafio-gdash-2025-02\weather-challenge\weather-worker"
+go run main.go
+```
+
+Esperado: `Waiting for messages...` ✅
+
+---
+
+## 🌐 Passo 7: Acessar Frontend
+
+Abra seu navegador:
 ```
 http://localhost:5173
 ```
@@ -47,6 +89,27 @@ http://localhost:5173
 **Login:**
 - Email: `admin@example.com`
 - Senha: `123456`
+
+---
+
+## 📊 Passo 8: Ver Dados no Compass
+
+1. Abra **MongoDB Compass**
+2. Vá para: `weather_db` → `weather_logs`
+3. Veja dados chegando em tempo real! 🎉
+
+---
+
+## 📋 Resumo - 4 Terminais Abertos
+
+| # | O quê | Comando |
+|---|-------|---------|
+| 1 | MongoDB | `Get-Service MongoDB \| Start-Service` |
+| 2 | Backend | `cd backend` `npm run start:dev` |
+| 3 | Python Collector | `cd weather-collector` `python main.py` |
+| 4 | Go Worker | `cd weather-worker` `go run main.go` |
+
+Deixe todos rodando! 🚀
 
 ---
 

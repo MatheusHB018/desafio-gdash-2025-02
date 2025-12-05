@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +15,7 @@ func main() {
 	// Pega configurações do .env ou usa padrão
 	rabbitMQURI := os.Getenv("RABBITMQ_URI")
 	apiURL := os.Getenv("API_URL")
+	authToken := os.Getenv("WORKER_AUTH_TOKEN") // Novo: Token de autenticação
 	queueName := "weather_queue"
 
 	if rabbitMQURI == "" {
@@ -22,9 +24,12 @@ func main() {
 	if apiURL == "" {
 		apiURL = "http://backend:3000/api/weather/logs"
 	}
+	if authToken == "" {
+		log.Fatalf("❌ Variável de ambiente WORKER_AUTH_TOKEN não definida!")
+	}
 
 	log.Println("🐰 Worker Go Iniciando...")
-	
+
 	// Loop de tentativa de conexão (caso o RabbitMQ demore a subir)
 	var conn *amqp.Connection
 	var err error
@@ -76,19 +81,31 @@ func main() {
 
 	log.Println("✅ Worker Go conectado e aguardando mensagens!")
 
+	httpClient := &http.Client{Timeout: 10 * time.Second}
 	forever := make(chan struct{})
 
 	go func() {
 		for d := range msgs {
 			log.Printf("📥 Recebido da Fila: %s", d.Body)
 
+			// Criar requisição com autenticação
+			req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(d.Body))
+			if err != nil {
+				log.Printf("❌ Erro ao criar requisição: %v", err)
+				d.Nack(false, true) // Devolve para fila
+				continue
+			}
+
+			// Adicionar cabeçalhos
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", authToken))
+
 			// Enviar para a API NestJS
-			resp, err := http.Post(apiURL, "application/json", bytes.NewBuffer(d.Body))
-			
+			resp, err := httpClient.Do(req)
+
 			if err != nil {
 				log.Printf("❌ Erro ao conectar na API: %v", err)
-				// Nack: Devolve para a fila para tentar de novo
-				d.Nack(false, true) 
+				d.Nack(false, true) // Devolve para a fila para tentar de novo
 				continue
 			}
 			defer resp.Body.Close()

@@ -12,6 +12,12 @@ export class WeatherLog {
   temperature: number;
 
   @Prop()
+  humidity?: number;
+
+  @Prop()
+  windSpeed?: number;
+
+  @Prop()
   condition: string;
 
   @Prop({ default: Date.now })

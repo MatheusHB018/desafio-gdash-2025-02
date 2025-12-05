@@ -173,7 +173,7 @@ export class WeatherService {
   async getCsvData() {
     const logs = await this.findAll();
     const fields = ['city', 'temperature', 'humidity', 'windSpeed', 'condition', 'createdAt'];
-    const json2csvParser = new Parser({ fields });
-    return json2csvParser.parse(logs);
+    const parser = new Parser({ fields });
+    return parser.parse(logs);
   }
 }

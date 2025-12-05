@@ -28,19 +28,9 @@ export class WeatherController {
   @Get('export/csv')
   @UseGuards(JwtAuthGuard)
   async exportCsv(@Res() res: Response) {
-    const csv = await this.weatherService.getCsvData();
-    res.header('Content-Type', 'text/csv');
-    res.attachment('weather_history.csv');
-    return res.send(csv);
-  }
-  
-  // Exportar XLSX (protegido)
-  @Get('export/xlsx')
-  @UseGuards(JwtAuthGuard)
-  async exportXlsx(@Res() res: Response) {
-    const csv = await this.weatherService.getCsvData();
+    const csvData = await this.weatherService.getCsvData();
     res.header('Content-Type', 'text/csv'); 
-    res.attachment('weather_history.xls');
-    return res.send(csv);
+    res.attachment('weather_history.csv');
+    return res.send(csvData);
   }
 }
