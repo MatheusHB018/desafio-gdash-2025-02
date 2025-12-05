@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { Response } from 'express';
 
 @Controller('api/weather')
+
 export class WeatherController {
   constructor(private readonly weatherService: WeatherService) {}
 
@@ -35,6 +36,3 @@ export class WeatherController {
   }
 }
 
-const port = process.env.PORT ?? 3000;
-await app.listen(port);
-console.log(`Listening on http://localhost:${port}`);
