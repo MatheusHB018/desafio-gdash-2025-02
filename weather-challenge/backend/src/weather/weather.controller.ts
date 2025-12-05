@@ -34,3 +34,7 @@ export class WeatherController {
     return res.send(csvData);
   }
 }
+
+const port = process.env.PORT ?? 3000;
+await app.listen(port);
+console.log(`Listening on http://localhost:${port}`);
